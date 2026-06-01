@@ -50,11 +50,15 @@ sets **Blind Willie McTell**, **Barnard Gulch**, and **Oakland Magnolia**.
 
 ## Conventions
 
-- **Sketch versioning:** `SketchName_v01`, `_v02`, … (two-digit, fork-only). Hardware
-  test family is `TrivisionHWTest`; choreography sketches in `ARDUINO/` are
-  `TrivisionChoreo_v01`…`v05` (a `v06` folder exists but is empty). The handoff doc
-  refers to the choreography family as `TrivisionCascade` (v01–v15) in the MCP sketch
-  dir — reconcile naming with Joel before adding a new sketch.
+- **Sketch versioning:** fork-only, never overwrite. The live choreography family
+  is **`TrivisionChoreo_v7_N`** (dot form `v7.N` in comments) — **latest is
+  `TrivisionChoreo_v7_11`** (Feb 26 2026). Hardware-test family is `TrivisionHWTest`;
+  the older 4-motor prototype family is `TrivisionCascade_v01–v15`.
+- **The live sketches live in `~/Documents/Arduino_MCP_Sketches/`, NOT in this
+  project's `ARDUINO/` folder** — that archive is stale (stops at `_v05` + an empty
+  `_v06`), so the GitHub repo currently does **not** contain the real latest motor
+  code. The handoff's "save to both locations" rule lapsed. Reconcile with Joel
+  before relying on `ARDUINO/` or adding a new sketch.
 - **Blender versioning:** `… v20.blend`, incrementing. Joel saves a new `_vN` before
   substantive changes — this is the per-file safety net for the (un-versioned-in-git)
   Blender work.
@@ -65,17 +69,14 @@ sets **Blind Willie McTell**, **Barnard Gulch**, and **Oakland Magnolia**.
 
 - Arduino Mega 2560, FQBN `arduino:avr:mega`, HCDC screw-terminal shield.
 - 12× StepperOnline NEMA 17 17HM19-2004S (0.9°/step → 400 full steps/rev).
-- 12× Adafruit TMC2209 (product 6121), StealthChop, **1/8 microstepping currently**
-  (MS1/MS2 floating → 3200 microsteps/rev). STEP pins 35–46, DIR pins 18–29.
+- 12× Adafruit TMC2209 (product 6121), StealthChop. STEP pins 35–46, DIR pins 18–29.
+  Microstepping has varied across the v7 series — the latest sketch (v7.11) uses
+  `MICRO_MULT 1` = **1/8** (MS1/MS2 floating → 3200 microsteps/rev) at 0.75 RPM; an
+  earlier experiment used 1/32. Read the specific sketch before changing timing.
 - Power: Mean Well LRS-150-24 → driver VM; Mega 5V → driver VDD; LM2596 buck → Mega VIN.
 - Proven smooth-motion architecture: Timer1 ISR at 50µs tick, integer S-curve ramp
   tables, direct port-register step pulses (no `digitalWrite`, no float in the step
   loop). Verified on a 4-motor prototype (`v15`); 12-motor ISR expansion is pending.
-
-> Open item to confirm with Joel: stored session memory describes a `MICRO_MULT 4`
-> (1/32) mode as the stutter-free config, but the handoff and the latest on-disk
-> sketch use 1/8 (`MICRO_MULT 1`). Verify the intended microstepping before changing
-> any timing constants.
 
 ## MCP tooling
 
