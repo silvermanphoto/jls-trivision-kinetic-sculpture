@@ -274,6 +274,7 @@ void printSummary() {
     if (i + 1 < 10) Serial.print(F(" "));
     Serial.print(i + 1);
     Serial.print(F("       "));
+    // Right-align position
     if (pos >= 0 && pos < 10000) Serial.print(F(" "));
     if (pos >= 0 && pos < 1000)  Serial.print(F(" "));
     if (pos >= 0 && pos < 100)   Serial.print(F(" "));

@@ -54,11 +54,12 @@ sets **Blind Willie McTell**, **Barnard Gulch**, and **Oakland Magnolia**.
   is **`TrivisionChoreo_v7_N`** (dot form `v7.N` in comments) — **latest is
   `TrivisionChoreo_v7_11`** (Feb 26 2026). Hardware-test family is `TrivisionHWTest`;
   the older 4-motor prototype family is `TrivisionCascade_v01–v15`.
-- **The live sketches live in `~/Documents/Arduino_MCP_Sketches/`, NOT in this
-  project's `ARDUINO/` folder** — that archive is stale (stops at `_v05` + an empty
-  `_v06`), so the GitHub repo currently does **not** contain the real latest motor
-  code. The handoff's "save to both locations" rule lapsed. Reconcile with Joel
-  before relying on `ARDUINO/` or adding a new sketch.
+- **Save every new sketch to BOTH** the Arduino MCP dir
+  (`~/Documents/Arduino_MCP_Sketches/`, where the MCP writes) **and** the project
+  `ARDUINO/` archive, then commit + push. As of 2026-06-01 the archive was
+  re-synced from the MCP dir, so `ARDUINO/` now mirrors the full sketch history
+  (`TrivisionCascade_v01–v15`, `TrivisionChoreo_v01–v07` and `v7_0–v7_11`,
+  `TrivisionHWTest_v01–v03`). Keep them in sync going forward.
 - **Blender versioning:** `… v20.blend`, incrementing. Joel saves a new `_vN` before
   substantive changes — this is the per-file safety net for the (un-versioned-in-git)
   Blender work.
