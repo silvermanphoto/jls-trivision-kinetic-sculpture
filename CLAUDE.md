@@ -85,6 +85,31 @@ sets **Blind Willie McTell**, **Barnard Gulch**, and **Oakland Magnolia**.
   live scene before writing `bpy`).
 - **Arduino MCP** for sketch create/verify/upload and board discovery.
 
+## Git and GitHub sync
+
+This repo is synced to a PRIVATE GitHub repository:
+https://github.com/silvermanphoto/jls-trivision-kinetic-sculpture
+
+Remote: `origin` (HTTPS). After every commit, push to keep GitHub in sync.
+
+This repo tracks **code, fabrication plans, and docs only** (~24 MB). The project
+folder also holds ~108 GB of binary media (Blender scenes, scans, renders, video)
+that is gitignored — it does not belong in git and must be backed up separately
+(external drive / cloud). Blender work is version-saved locally as `… vN.blend`.
+
+Rules:
+1. ALWAYS push after committing — a local-only commit is incomplete work. If Joel
+   forgets, remind him.
+2. Never force-push (`--force`) without Joel's explicit approval.
+3. The repo is PRIVATE. Do not change its visibility.
+4. Never commit build artifacts, secrets, or logs, and never commit the heavy media
+   types (`.blend`, `.mov`, `.tif`, `.psd`, `.skp`, `.glb`, …) — `.gitignore` covers
+   them. If you add a new generated/sensitive/large file category, extend
+   `.gitignore` before committing.
+5. Check file sizes before committing anything new — GitHub hard-blocks files over
+   100 MB. If a genuinely needed source file is that large, raise Git LFS with Joel
+   before pushing.
+
 ## Working style
 
 - **Scope:** make the change asked for and what it clearly requires; surface
