@@ -1,0 +1,7 @@
+Project: McTell Ghostphone Shadowbox
+Generated: 2026-01-02 04:07:41
+Active Joinery Method: HALF_ROUND_BOX_JOINT
+
+CUT LIST (Name | Qty | Dimensions):
+1. FRONT_BEZEL | 1 | 63.46" x 44.58"
+See previous version for full CAM details. Parameters applied.

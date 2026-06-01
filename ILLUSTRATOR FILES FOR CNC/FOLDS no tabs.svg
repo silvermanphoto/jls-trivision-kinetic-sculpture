@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg id="Layer_1" xmlns="http://www.w3.org/2000/svg" width="1225.2677mm" height="412.4678mm" version="1.1" viewBox="0 0 3473.2 1169.2001">
+  <!-- Generator: Adobe Illustrator 29.7.1, SVG Export Plug-In . SVG Version: 2.1.1 Build 8)  -->
+  <defs>
+    <style>
+      .st0 {
+        stroke-width: 10px;
+      }
+
+      .st0, .st1, .st2 {
+        fill: none;
+      }
+
+      .st0, .st2 {
+        stroke: #e7ed00;
+        stroke-miterlimit: 10;
+      }
+
+      .st1 {
+        stroke: aqua;
+        stroke-miterlimit: 287.111;
+        stroke-width: .9969px;
+      }
+    </style>
+  </defs>
+  <g id="FOLDS">
+    <line class="st1" x1="3092.9573" y1="426.545" x2="509.3566" y2="426.545"/>
+    <line class="st1" x1="3092.9573" y1="731.5007" x2="509.3566" y2="731.5007"/>
+    <line class="st1" x1="509.3566" y1="426.545" x2="509.3566" y2="731.5007"/>
+    <line class="st1" x1="3092.9573" y1="426.545" x2="3092.9573" y2="731.5007"/>
+    <polyline class="st1" points="3092.9585 1036.5561 530.73 1036.5595 516.7898 1036.5595 509.3566 1036.5595"/>
+    <line class="st1" x1="509.3566" y1="121.4896" x2="3092.9573" y2="121.4896"/>
+  </g>
+  <g id="registration_box">
+    <rect class="st2" x="5" y="5.0001" width="3463.2" height="1159.2"/>
+    <rect class="st0" x="5" y="5.0001" width="3463.2" height="1159.2"/>
+  </g>
+</svg>

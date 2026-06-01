@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" width="1764.3602mm" height="1764.3602mm" viewBox="0 0 1764.3602 1764.3602">
+  <title>BACK_PANEL</title>
+  <rect x="98.6000" y="98.6000" width="1617.9602" height="1138.3320" fill="none" stroke="#00FF00" stroke-width="0.5"/>
+  <path d="M 101.6000 101.6000 L 1713.5602 101.6000 L 1713.5602 1233.9320 L 101.6000 1233.9320 Z" fill="none" stroke="#000000" stroke-width="0.5"/>
+  <path d="M 117.4750 117.4750 L 1697.6852 117.4750 L 1697.6852 1218.0570 L 117.4750 1218.0570 Z" fill="none" stroke="#0000FF" stroke-width="0.5"/>
+    <circle cx="109.5375" cy="109.5375" r="2.5000" fill="#FFFFFF" stroke="#FF0000" stroke-width="0.5"/>
+  <circle cx="1705.6227" cy="109.5375" r="2.5000" fill="#FFFFFF" stroke="#FF0000" stroke-width="0.5"/>
+  <circle cx="109.5375" cy="1225.9945" r="2.5000" fill="#FFFFFF" stroke="#FF0000" stroke-width="0.5"/>
+  <circle cx="1705.6227" cy="1225.9945" r="2.5000" fill="#FFFFFF" stroke="#FF0000" stroke-width="0.5"/>
+  <circle cx="638.9201" cy="109.5375" r="2.5000" fill="#FFFFFF" stroke="#FF0000" stroke-width="0.5"/>
+  <circle cx="1176.2401" cy="109.5375" r="2.5000" fill="#FFFFFF" stroke="#FF0000" stroke-width="0.5"/>
+  <circle cx="638.9201" cy="1225.9945" r="2.5000" fill="#FFFFFF" stroke="#FF0000" stroke-width="0.5"/>
+  <circle cx="1176.2401" cy="1225.9945" r="2.5000" fill="#FFFFFF" stroke="#FF0000" stroke-width="0.5"/>
+  <circle cx="109.5375" cy="479.0440" r="2.5000" fill="#FFFFFF" stroke="#FF0000" stroke-width="0.5"/>
+  <circle cx="109.5375" cy="856.4880" r="2.5000" fill="#FFFFFF" stroke="#FF0000" stroke-width="0.5"/>
+  <circle cx="1705.6227" cy="479.0440" r="2.5000" fill="#FFFFFF" stroke="#FF0000" stroke-width="0.5"/>
+  <circle cx="1705.6227" cy="856.4880" r="2.5000" fill="#FFFFFF" stroke="#FF0000" stroke-width="0.5"/>
+  <polygon points="901.2301,98.6000 913.9301,98.6000 909.1676,101.6000 905.9926,101.6000" fill="none" stroke="#FF00FF" stroke-width="0.35"/>
+<polygon points="1716.5602,661.4160 1716.5602,674.1160 1713.5602,669.3535 1713.5602,666.1785" fill="none" stroke="#FF00FF" stroke-width="0.35"/>
+<polygon points="913.9301,1236.9320 901.2301,1236.9320 905.9926,1233.9320 909.1676,1233.9320" fill="none" stroke="#FF00FF" stroke-width="0.35"/>
+<polygon points="98.6000,674.1160 98.6000,661.4160 101.6000,666.1785 101.6000,669.3535" fill="none" stroke="#FF00FF" stroke-width="0.35"/>
+    <text x="907.5801" y="667.7660" text-anchor="middle" font-family="Josefin Sans" font-size="60.0000" fill="#FF00FF" >
+    <tspan x="907.5801" dy="-12.0000" font-weight="600">BACK_PANEL</tspan>
+    <tspan x="907.5801" dy="72.0000" font-weight="400">63.46" x 44.58"</tspan>
+  </text>
+</svg>

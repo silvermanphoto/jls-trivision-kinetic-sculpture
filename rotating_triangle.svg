@@ -1,0 +1,20 @@
+<svg width="200" height="200" viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg">
+  <!-- Center dot for reference -->
+  <circle cx="100" cy="100" r="3" fill="gray"/>
+  
+  <!-- Equilateral triangle centered at 100,100 -->
+  <polygon points="100,30 160.62,135 39.38,135" fill="none" stroke="#1a73e8" stroke-width="4">
+    <!-- 
+      1 RPM = 1 rotation (360 degrees) per 60 seconds
+      dur="60s" controls the speed
+      from and to define the rotation around the center point (100, 100)
+    -->
+    <animateTransform 
+      attributeName="transform"
+      type="rotate"
+      from="0 100 100"
+      to="360 100 100"
+      dur="60s"
+      repeatCount="indefinite" />
+  </polygon>
+</svg>

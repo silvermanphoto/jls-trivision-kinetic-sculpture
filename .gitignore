@@ -1,0 +1,51 @@
+# ── Trivision Kinetic Sculpture .gitignore ────────────────────────────────
+# This is a code + fabrication-plans + docs repo. The project folder also holds
+# ~108 GB of binary media (Blender scenes, scans, renders) that does NOT belong
+# in git — GitHub hard-blocks files over 100 MB. Those assets live on disk only;
+# back them up separately (external drive / cloud). Blender work is version-saved
+# locally as `… vN.blend`.
+
+# ── Heavy / binary media (never commit) ──
+*.blend
+*.blend[0-9]*
+*.mov
+*.mp4
+*.m4v
+*.avi
+*.tif
+*.tiff
+*.psd
+*.psb
+*.skp
+*.glb
+*.gltf
+*.fbx
+*.exr
+*.dmg
+
+# ── Pure-media folders (entirely excluded) ──
+Blender Files/
+Blender Scalata Mockup/
+ARTWORK TO PRINT/
+Equitable Views Camera Scalata/
+INSTAGRAM TIMELAPSE VIDEO/
+Blender Scalata Mockup/Sketchup Living Room/
+
+# ── Python environments / caches ──
+.venv/
+venv/
+__pycache__/
+*.pyc
+
+# ── macOS / editor cruft ──
+.DS_Store
+*.log
+
+# ── Secrets ──
+.env
+.env.*
+*.key
+*.pem
+
+# ── Claude Code local settings ──
+.claude/
