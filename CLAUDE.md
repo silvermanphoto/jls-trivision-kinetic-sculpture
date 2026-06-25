@@ -125,6 +125,53 @@ sets **Blind Willie McTell**, **Barnard Gulch**, and **Oakland Magnolia**.
   the centered 12-station hole grid +0.42 in per station, and added 12 bottom tabs +
   4 one-inch cross-bores.)
 
+## Fusion + Blender together (visualization workflow, 2026-06-25)
+
+Run **both** MCPs at once: Fusion (27182) holds the **canonical** geometry; Blender
+(9876) is for **visualization only**, not CAD/CAM. Workflow to bring Fusion parts
+into Blender:
+
+- **Export mesh from Fusion, import to Blender.** Blender has no STEP importer.
+  Export STL from Fusion (`exportManager.createSTLExportOptions(geom, path)`, geom =
+  an Occurrence / Component / BRepBody; `MeshRefinementMedium`, `isBinaryFormat`).
+  Fusion STL is in **millimeters**.
+- **`wm.stl_import(filepath, global_scale=0.001)`** brings mm → metres, but the 0.001
+  goes onto the **object scale** — the **mesh vertices stay in mm**. So `Object`
+  texture coordinates and any raw `mesh.vertices.co` are in mm; box-projection mapping
+  scale must be `meters_per_unit / tile_metres` (mm mesh → mpu 0.001).
+- **Placement-drift gotcha.** After `E.location = center` you MUST call
+  `view_layer.update()` before reading `E.matrix_world` for
+  `o.matrix_parent_inverse = E.matrix_world.inverted()`. Skip it and the inverse is
+  stale (identity), so the child doesn't recenter and lands at its import coords.
+- **STL import welds touching bodies** (merges coincident verts), so connected-
+  component analysis can NOT recover the individual Fusion bodies from a single STL.
+  And per-body STL export gave **inconsistent (body-local) coordinates** for some
+  occurrences (V2 per-body union read 74 in vs the true 68.25 in), so the bodies
+  can't be reassembled in world space either. To texture **regions** of an imported
+  housing, classify **faces by the mesh's own local geometry** (outer-shell faces vs
+  inset recess walls) and set `polygon.material_index` — don't rely on per-body data.
+- **Material-clobber bug.** Don't `bpy.data.materials.remove(m)`+recreate a *shared*
+  material inside a per-object loop — it blanks the slots of objects processed
+  earlier (they go default-grey). Build shared materials **once**, then assign.
+- **Texturing without UVs.** STL imports have no UVs. Use an Image Texture node with
+  `projection='BOX'` fed by `TexCoord.Object → Mapping`, so no unwrap is needed and
+  grain stays consistent across faces.
+
+**Collections are NOT transform parents.** Selecting a collection ("folder") and
+moving only moves the objects that happen to be selected — there's no rigid-body
+container. To make a named group move/rotate/scale as one, add a root **Empty** and
+parent the top-level objects to it (Joel's `..._ROOT` pattern; the deleted billboards
+used `*_CNC_Frame_ROOT`). "Only part of it moves" = no root parent, or you grabbed a
+sub-empty that carries just its branch.
+
+**Original-assembly frame materials** (collection `TRIVISION VERSION 1 `, note the
+trailing space — the kinetic assembly, distinct from the imported Fusion housings
+named `… (FUSION)`): OUTSIDE FRAME = per-rail **Baltic Birch plywood** + birch back
+panel (image `Baltic Birch Plywood Texture 63.5x40.tiff` in `Blender Files/`);
+INSIDE FRAME = **oak veneer** (`oak_veneer_01_*`, packed as `/var/folders` temp files
+— `file_exists=False` but `has_data=True`, so they still render). The recess interior
+is the birch back panel, not black.
+
 ## Git and GitHub sync
 
 This repo is synced to a PRIVATE GitHub repository:
