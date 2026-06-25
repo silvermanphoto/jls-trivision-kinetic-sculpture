@@ -86,6 +86,44 @@ sets **Blind Willie McTell**, **Barnard Gulch**, and **Oakland Magnolia**.
   Follow the `blender-projects` skill (outliner/collection discipline, verify the
   live scene before writing `bpy`).
 - **Arduino MCP** for sketch create/verify/upload and board discovery.
+- **Fusion 360 MCP** (added to Claude Code 2026-06-24, user scope). Streamable-HTTP
+  server at `http://127.0.0.1:27182/mcp` (the bare root 404s — the endpoint is
+  `/mcp`). Requires Fusion running with the MCP server enabled in **Preferences >
+  General > API > Fusion MCP Server**. Note: enabling the Autodesk Fusion *connector*
+  in Claude Desktop does NOT expose tools to Claude Code — it had to be added here
+  separately (`claude mcp add --scope user --transport http fusion <url>`). Tools:
+  `fusion_mcp_read` (incl. `screenshot`, `document` queries, `apiDocumentation`),
+  `fusion_mcp_execute` (run a Python `def run(_context)` script, or open/close/save a
+  doc), `fusion_mcp_update` (undo/redo), `fusion_mcp_electronics_read`. Fusion API
+  internal units are **cm** — divide by 2.54 for inches.
+
+## Fusion / CAD gotchas (learned 2026-06-24)
+
+- **A broken third-party MCP shim spams script stdout.** A failing AuraFriday
+  "Control your Mac" / `mcp-link-server` reconnect loop injects ~32 KB of
+  `[MCP] [RECONNECT]…` log noise into the stdout captured from Fusion `execute`
+  scripts (one run ballooned to 190 KB / "exceeds max tokens"). Workaround: have the
+  Fusion Python **write results to a file** (`open('/tmp/foo.json','w')`) and read /
+  process them locally with Bash, or print unique `MARK_…` lines and grep them out.
+  Don't rely on clean stdout from Fusion scripts.
+- **Importing a STEP and moving it (two-pass).** STEP comes in as dumb BRep (no
+  parametric tree). To place an import at a known offset without fighting parametric
+  move-features: import once into a temp `addNewComponent(identity)` to measure its
+  native bounding box, `deleteMe()` the temp, then re-import into
+  `root.occurrences.addNewComponent(T)` where `T` is the desired translation — the
+  transform is baked at creation, so no Move feature is needed. Use
+  `importManager.createSTEPImportOptions(path)` + `importToTarget2(opts, comp)`.
+- **External labels** = a sketch on `xYConstructionPlane` with
+  `sketchTexts.createInput2(text, height_cm)` + `input.setAsMultiLine(p1, p2, hAlign,
+  vAlign, spacing)`, then `texts.add(input)`.
+- **CAD version diff approach.** With no feature tree, compare geometry: OD bounding
+  box, body inventory, planar-face Z/Y levels, and cylindrical faces (holes) grouped
+  by axis + diameter, all referenced to each part's own min corner. Cluster holes
+  into rows/columns to recover pitch. (2026-06-24: compared `Trivision PLS.step` as
+  "Version 1" against the live "06.24.26 Trivision Billboard v2" — V1 is the smaller
+  earlier billboard; V2 widened +5.8 in / deepened +1.0 in / same height, re-pitched
+  the centered 12-station hole grid +0.42 in per station, and added 12 bottom tabs +
+  4 one-inch cross-bores.)
 
 ## Git and GitHub sync
 
