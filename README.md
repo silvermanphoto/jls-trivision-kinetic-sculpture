@@ -1,15 +1,45 @@
 # Trivision Kinetic Sculpture
 
+I found an 1895 carte-de-visite made about 800 feet away from Atlanta's "zero
+mile post" which marked the founding spot of the city in 1837, and directly over
+the site of Jacobs' Pharmacy where Coca-Cola was first served in 1886. A now
+unknown photographer made the view from the rooftop of the now-demolished
+original Equitable Building in Atlanta's Five Points. To capture the same
+viewpoint, I had to figure out the rooftop height of that long-gone building,
+and fly a drone camera to that elevation. The alignment of my 2025 photograph
+with the 1895 postcard is almost perfect, yet there is almost no architectural
+legacy left from the original scene, so I have paired the two photographs with
+a map so the viewer can orient themselves.
+
+Making the images rotate in the style of a 1950s trivision billboard came to me
+when I was commissioned to create a 40 foot long immersive hallway for Hambidge
+Hive in 2025. I created a zigzag in the style of a tabula scalata, an illusion
+dating from the 16th century in which an image is painted on two faces of a
+zigzag frame so that the picture seems to change from one image to another
+while walking past it. I was happy/not happy with the result. I liked the idea
+of activating an installation with the viewer's own participation. But I
+wondered if a tabula scalata could reveal itself, and remembered vaguely that
+in the 1950s there were "trivision" billboards on the highways that rotated ads
+on prisms, the first "digital display" in history.
+
+It took me six months of feverish work to figure out how to make the 12 motors
+work in sync, and designing and fabricating the massive intricate plywood
+cabinet it is housed in turned out to be one of the most fiendishly difficult
+technical challenges of my studio career.
+
+— Joel Silverman
+
+## The sculpture
+
 Twelve triangular prisms in a row, each carrying strips of three photographic
 images, each turned by its own stepper motor inside a CNC-fabricated wooden
 frame. As the prisms rotate — slowly, silently, in choreographed patterns — the
 sculpture dissolves between three photographs; when all twelve prisms land on
 the same face, a single panorama spans the full width.
 
-The mechanism borrows from the trivision billboards of roadside advertising,
-rebuilt at gallery scale and choreographed like a musical score. A kinetic
-artwork by [Joel Silverman](https://joelsilverman.com), Atlanta. Current image
-sets: *Blind Willie McTell*, *Barnard Gulch*, and *Oakland Magnolia*.
+A kinetic artwork by [Joel Silverman](https://joelsilverman.com), Atlanta,
+choreographed like a musical score. Current image sets: *Blind Willie McTell*,
+*Barnard Gulch*, and *Oakland Magnolia*.
 
 ## How it works
 
