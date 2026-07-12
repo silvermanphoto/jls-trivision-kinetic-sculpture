@@ -1,5 +1,7 @@
 # Trivision Kinetic Sculpture
 
+![The sculpture mid-rotation: twelve prisms showing the map, the 2025 photograph, and the 1895 view at once](images/trivision-mid-rotation.jpg)
+
 I found an 1895 carte-de-visite made about 800 feet away from Atlanta's "zero
 mile post" which marked the founding spot of the city in 1837, and directly over
 the site of Jacobs' Pharmacy where Coca-Cola was first served in 1886. A now
