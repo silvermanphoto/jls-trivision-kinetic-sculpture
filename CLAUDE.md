@@ -174,7 +174,7 @@ is the birch back panel, not black.
 
 ## Git and GitHub sync
 
-This repo is synced to a PRIVATE GitHub repository:
+This repo is synced to a PUBLIC GitHub repository (made public 2026-07-12):
 https://github.com/silvermanphoto/jls-trivision-kinetic-sculpture
 
 Remote: `origin` (HTTPS). After every commit, push to keep GitHub in sync.
@@ -188,7 +188,8 @@ Rules:
 1. ALWAYS push after committing — a local-only commit is incomplete work. If Joel
    forgets, remind him.
 2. Never force-push (`--force`) without Joel's explicit approval.
-3. The repo is PRIVATE. Do not change its visibility.
+3. The repo is PUBLIC — anyone on the internet can read every file and all history.
+   Never commit anything sensitive or personal. Only Joel changes visibility.
 4. Never commit build artifacts, secrets, or logs, and never commit the heavy media
    types (`.blend`, `.mov`, `.tif`, `.psd`, `.skp`, `.glb`, …) — `.gitignore` covers
    them. If you add a new generated/sensitive/large file category, extend
