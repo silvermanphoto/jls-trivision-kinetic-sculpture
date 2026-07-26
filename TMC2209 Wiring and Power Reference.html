@@ -97,6 +97,35 @@
   <p>If you reverse the two wires within one coil — black and green with each other, say — the motor still runs perfectly, it just turns the other way. Only mixing wires <em>between</em> the two coils causes a fault.</p>
 </div>
 
+<h2>The other side — the pin header to the Arduino</h2>
+
+<p>Checked against your wiring manual, the four-wire cable from the Arduino is correct as built:</p>
+
+<table>
+  <tr><th>Cable colour</th><th>Driver pin</th><th>Goes to</th></tr>
+  <tr><td>Red</td><td>VDD</td><td>5V logic bus</td></tr>
+  <tr><td>Yellow</td><td>GND</td><td>ground bus</td></tr>
+  <tr><td>Green</td><td>DIR</td><td>Arduino terminal 18–29</td></tr>
+  <tr><td>White</td><td>STEP</td><td>Arduino terminal 35–46</td></tr>
+</table>
+
+<div class="call">
+  <span class="tag">Two different green wires</span>
+  <p>Green on the pin header means direction. Green on the screw terminal means one end of motor coil A. They are unrelated and go to different connectors — worth keeping straight when tracing a cable.</p>
+</div>
+
+<h3>Leaving the remaining pins unconnected is correct</h3>
+
+<p>Your manual records MS1, MS2, DIAG, INDEX, UART and EN as unconnected on every driver. That is right on both counts that matter:</p>
+
+<table>
+  <tr><th>Pin</th><th>Left unconnected</th><th>Result</th></tr>
+  <tr><td>EN</td><td>yes</td><td>Driver <strong>enabled</strong>. Adafruit's guide: "pull this pin high to disable the output to the motors," so floating leaves it running.</td></tr>
+  <tr><td>MS1, MS2</td><td>yes</td><td><strong>1/8 microstepping</strong>, the board's default — 3200 microsteps per revolution, which is what the sketch's step maths assumes.</td></tr>
+</table>
+
+<p>So neither pin is the source of the trouble.</p>
+
 <h2>Verify by meter, not by colour</h2>
 
 <p>After a rewiring, an extension lead may have been swapped and the colours can lie. With the 24V <strong>off</strong>, measure resistance between wire ends:</p>
@@ -138,6 +167,21 @@
 <p>So the supply is at its full rating while the sculpture does nothing whatsoever. Add the surge as twelve drivers charge their capacitors at the instant you plug in, and it goes straight past the trip point — shut down, retry, shut down, retry.</p>
 
 <p>Source: Mean Well LRS-150 series datasheet, specification table. Overload row reads: hiccup mode, recovers automatically after fault condition is removed.</p>
+
+<div class="call">
+  <span class="tag">Your own design notes agree</span>
+  <p>The wiring manual states: "The system is calculated to draw ~80W under normal load. The 150W PSU provides ~50% safety headroom." Eighty watts across twelve motors is about <strong>1.5 amps each</strong>, not two. The supply was chosen for that figure and it is a sound choice — but only at that current.</p>
+  <p>Turned to maximum, the same twelve motors want closer to 155 watts. The dials, not the design, are what changed.</p>
+</div>
+
+<table>
+  <tr><th>Current per phase</th><th>Whole sculpture, standing still</th><th>Against a 156 W supply</th></tr>
+  <tr><td class="num">2.0 A (dial at maximum)</td><td class="num">≈ 155 W</td><td>at the limit — hiccups</td></tr>
+  <tr><td class="num">1.5 A (the design figure)</td><td class="num">≈ 87 W</td><td>comfortable</td></tr>
+  <tr><td class="num">1.0 A</td><td class="num">≈ 39 W</td><td>very comfortable, runs cool</td></tr>
+</table>
+
+<p>The dial turns clockwise for more current — Adafruit's guide: "when all the way to the right we can get up to 2A max." So counter-clockwise reduces it.</p>
 
 <h2>What to do, in order</h2>
 
