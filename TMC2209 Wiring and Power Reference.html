@@ -114,17 +114,18 @@
   <p>Green on the pin header means direction. Green on the screw terminal means one end of motor coil A. They are unrelated and go to different connectors — worth keeping straight when tracing a cable.</p>
 </div>
 
-<h3>Leaving the remaining pins unconnected is correct</h3>
+<h3>Leaving the remaining pins unconnected — mostly right, one worth changing</h3>
 
-<p>Your manual records MS1, MS2, DIAG, INDEX, UART and EN as unconnected on every driver. That is right on both counts that matter:</p>
+<p>Your manual records MS1, MS2, DIAG, INDEX, UART and EN as unconnected on every driver. Two of those are exactly right:</p>
 
 <table>
   <tr><th>Pin</th><th>Left unconnected</th><th>Result</th></tr>
-  <tr><td>EN</td><td>yes</td><td>Driver <strong>enabled</strong>. Adafruit's guide: "pull this pin high to disable the output to the motors," so floating leaves it running.</td></tr>
-  <tr><td>MS1, MS2</td><td>yes</td><td><strong>1/8 microstepping</strong>, the board's default — 3200 microsteps per revolution, which is what the sketch's step maths assumes.</td></tr>
+  <tr><td>EN</td><td>fine</td><td>Driver <strong>enabled</strong>. Adafruit's guide: "pull this pin high to disable the output to the motors," so floating leaves it running.</td></tr>
+  <tr><td>MS1, MS2</td><td>fine</td><td><strong>1/8 microstepping</strong>, the board's default — 3200 microsteps per revolution, which is what the sketch's step maths assumes.</td></tr>
+  <tr><td>UART <span class="num">(header pin 9)</span></td><td><strong>worth changing</strong></td><td>This is also the automatic standstill power-down control. Floating means the feature is not reliably on. Grounding it cuts resting power to under a third — see the section below.</td></tr>
 </table>
 
-<p>So neither pin is the source of the trouble.</p>
+<p>So none of these is the source of the pulsing, but one of them is leaving a large power saving on the table.</p>
 
 <h2>Verify by meter, not by colour</h2>
 
@@ -147,26 +148,72 @@
 
 <h3>Where to put the probes</h3>
 
+<p>The dial is a Bourns 3314J trimmer. <strong>Its body and its adjustment slot are plastic and connected to nothing</strong> — touching them reads zero no matter what else is right. The three tiny metal legs soldered to the board are the only electrical contacts.</p>
+
+<p>Hold the board with the <strong>green screw terminal at the top</strong> and the row of pins at the bottom, looking down at the component side. The dial sits on the right-hand edge, and its three legs are arranged two-and-one:</p>
+
+<table>
+  <tr><th>Leg</th><th>What it is</th><th>Should read</th></tr>
+  <tr><td>The <strong>single</strong> leg, pointing up toward the screw terminal</td><td><strong>The measuring point</strong> — this is the wiper</td><td class="num">0 to 1.16 V, moves as you turn the dial</td></tr>
+  <tr><td>Of the two legs pointing down toward the pins: the one <strong>nearer the board's edge</strong></td><td>The fixed feed into the dial</td><td class="num">1.16 V, always</td></tr>
+  <tr><td>Of the two legs pointing down: the one <strong>nearer the chip</strong></td><td>Ground</td><td class="num">0 V</td></tr>
+</table>
+
 <ol class="steps">
-  <li><strong>Unplug that driver's motor</strong> at the green screw terminal first. Then nothing can move and nothing can be damaged while you work.</li>
-  <li><strong>Apply 24 V.</strong> This is essential and not obvious — the dial is fed from the driver chip's <em>own</em> internal 5 V regulator, which only runs when 24 V is present. On USB power alone you will read zero volts and think the meter has failed.</li>
+  <li><strong>Unplug that driver's motor</strong> at the green screw terminal first. Then nothing can move while you work. Nothing on or around the dial is at a dangerous or damaging voltage, so this part is low-risk.</li>
+  <li><strong>Apply 24 V — and confirm it is really there.</strong> See the warning below; this is the most likely reason for a zero reading.</li>
   <li><strong>Black probe on ground.</strong> The ground screw terminal on the green block (second from the left, marked with a minus) is the easiest solid contact.</li>
-  <li><strong>Red probe on the metal adjustment screw of the dial itself.</strong> On this style of trimmer the screw is electrically the wiper. Confirm you are on the right spot by turning it slightly — the reading should move.</li>
+  <li><strong>Red probe on the middle leg nearer the board's edge first</strong> — the fixed feed. If that reads 1.16 V, everything upstream is working and you can trust what you read on the wiper. If it reads zero, stop: the driver's internal 5 V is not running, which means 24 V is not reaching this board.</li>
   <li>Meter on <strong>DC volts</strong>, 2 V range if it does not auto-range.</li>
 </ol>
+
+<div class="call">
+  <span class="tag">The lit LED does not mean 24 V is present</span>
+  <p>Read from Adafruit's schematic: the three little lights are <strong>logic indicators fed from the Arduino's 5 V</strong>, not power indicators. The red and green pair show which way the direction wire is set — green for one way, red for the other — and the yellow one flickers when step pulses arrive. All three run whether or not 24 V is connected.</p>
+  <p>So a light coming on tells you the Arduino is talking to the board. It says nothing about the motor supply. The dial's voltage, by contrast, comes from a 5 V regulator <em>inside the driver chip</em> that only runs when 24 V is on the board's power terminals.</p>
+  <p><strong>Check 24 V directly</strong> at the two left-hand screw terminals on the green block, which is a far easier target than the dial's legs. If that reads 24 V and the dial's fixed leg still reads zero, that driver chip has a problem.</p>
+</div>
 
 <h3>The number to aim for</h3>
 
 <table>
   <tr><th>Current you want, per phase</th><th>Set the dial to</th></tr>
   <tr><td class="num">0.8 A</td><td class="num">0.61 V</td></tr>
-  <tr><td class="num"><strong>1.0 A</strong> — recommended</td><td class="num"><strong>0.76 V</strong></td></tr>
-  <tr><td class="num">1.2 A</td><td class="num">0.91 V</td></tr>
+  <tr><td class="num">1.0 A</td><td class="num">0.76 V</td></tr>
+  <tr><td class="num"><strong>1.3 A</strong> — recommended</td><td class="num"><strong>1.00 V</strong></td></tr>
   <tr><td class="num">1.5 A</td><td class="num">1.14 V</td></tr>
   <tr><td class="num">dial fully clockwise</td><td class="num">≈ 1.16 V ≈ 1.53 A</td></tr>
 </table>
 
 <p>Each of the twelve dials is independent and they will not match out of the box. Setting all twelve is twelve measurements — about fifteen minutes, done once.</p>
+
+<div class="call">
+  <span class="tag">Why 1.00 V and not lower</span>
+  <p>The chip's own datasheet cautions against running the reference below roughly one volt: at low reference voltages, electrical noise and supply ripple become large <em>relative</em> to the reference, and the current regulation gets less precise. Their words: it is "not advised to work with reference voltages below about 0.5V to 1V for full scale," and for best precision a board should be designed so its maximum lands between 2 and 2.4 volts.</p>
+  <p>Adafruit's board tops out at 1.16 V, so it already sits inside the range the chip maker cautions about. Nothing to be done about that — it is fixed by resistors on the board. But it does mean the sensible move is to use <em>more</em> of the dial's range rather than less. Since imprecise current regulation shows up as chopper noise, and this piece has to be silent, the earlier advice to drop to 0.76 V was pointing the wrong way. Use 1.00 V, and take the heat saving from the standstill setting below instead.</p>
+</div>
+
+<h2>The one free change worth making: standstill power down</h2>
+
+<p class="lead">Grounding a single pin on each driver cuts the sculpture's resting power to under a third, with no loss of speed, smoothness or precision while moving.</p>
+
+<p>A stepper burns its full set current while standing perfectly still, doing nothing. The TMC2209 has a built-in answer: when it notices the step pulses have stopped, it drops to a little over half current. The datasheet puts the saving at <strong>less than 33% of standstill power dissipation</strong>.</p>
+
+<p>It is enabled by pulling the chip's combined power-down and serial pin to ground. Adafruit's schematic shows that pin wired only to the header — <strong>no pull resistor either way, so on your boards it is floating and the feature is not reliably on</strong>. Your wiring manual lists it as unconnected, which matches.</p>
+
+<p><strong>The change:</strong> a jumper from <strong>pin 9 of the ten-pin header to pin 2</strong> (ground) on each driver. Pin 1 is the end nearest the 5 V logic wire; both are on the same connector you already have wires in, so nothing needs unsoldering.</p>
+
+<table>
+  <tr><th>Twelve motors</th><th>Standing still now</th><th>Standing still with the pin grounded</th></tr>
+  <tr><td class="num">dial at 1.00 V (1.3 A)</td><td class="num">≈ 82 W</td><td class="num">≈ 27 W</td></tr>
+  <tr><td class="num">dial fully clockwise (1.53 A)</td><td class="num">≈ 112 W</td><td class="num">≈ 37 W</td></tr>
+</table>
+
+<div class="call">
+  <span class="tag">Test this before trusting it</span>
+  <p>Half current at rest means half the holding torque at rest. If the prisms are well balanced about their shafts, gravity asks almost nothing of the motor and this is free. If any prism is heavy on one side, it could creep off its face while idle — which on this piece would be visible and unacceptable.</p>
+  <p>So do it on <strong>one</strong> driver first, leave that prism parked on a face for an hour, and check it has not drifted. Only then do the other eleven. Note also that grounding this pin rules out ever talking to the driver over its serial interface, which this project does not use.</p>
+</div>
 
 <div class="call">
   <span class="tag">Ignore the formula you will find online</span>
@@ -199,13 +246,14 @@
 <table>
   <tr><th>Current per phase</th><th>Whole sculpture, standing still</th><th>Against a 156 W supply</th></tr>
   <tr><td class="num">1.53 A — dial fully clockwise, the true maximum</td><td class="num">≈ 110–120 W</td><td>about three-quarters loaded — tight, not a trip</td></tr>
-  <tr><td class="num">1.0 A — recommended</td><td class="num">≈ 50–55 W</td><td>comfortable, runs cool</td></tr>
+  <tr><td class="num">1.3 A — recommended dial setting</td><td class="num">≈ 82 W</td><td>comfortable</td></tr>
+  <tr><td class="num">1.3 A <em>and</em> standstill power-down grounded</td><td class="num">≈ 27 W</td><td>the setting to aim for</td></tr>
   <tr><td class="num">2.0 A</td><td class="num">(≈ 155 W)</td><td><strong>the dial cannot reach this</strong></td></tr>
 </table>
 
 <p>Overload protection engages at 110–140% of rating, which is 172–218 watts. Even with every dial at maximum the sculpture standing still does not get there. The driver-loss share of those figures is estimated from the chip's on-resistance rather than measured, so treat the range as a range.</p>
 
-<p>So the dials are worth turning down for heat, noise and headroom — but they are probably not the cause of the pulsing on their own.</p>
+<p>So the dials are worth setting deliberately for heat and headroom — but they are probably not the cause of the pulsing on their own. Note too that when all twelve prisms move together, current is back to the full run figure, so the standstill saving does not help during a synchronised move.</p>
 
 <div class="call">
   <span class="tag">The other candidate</span>
@@ -218,7 +266,8 @@
   <li><strong>Watch the rail — this one measurement decides it.</strong> Put a meter across the 24 V output while it pulses. If the voltage collapses and recovers in time with the pulsing, it is the supply. If the voltage holds steady, the supply is innocent and the cause is on the signal side.</li>
   <li><strong>Check the power-on order.</strong> Confirm the Arduino is powered and running the sketch — serial banner visible — <em>before</em> 24 V goes on. If the pulsing only happens when 24 V leads, that is the answer.</li>
   <li><strong>Prove it in two minutes.</strong> Unplug eleven motors at the terminal blocks and leave one connected. Power up. If the pulsing stops, it points at the shared rail rather than the wiring.</li>
-  <li><strong>Set the current dials deliberately</strong> using the voltage table above. Around 1 amp puts the whole sculpture near 50 watts instead of 110 — comfortable, cooler, and quieter.</li>
+  <li><strong>Set the current dials deliberately</strong> using the voltage table above — 1.00 V on each, giving about 1.3 amps per phase.</li>
+  <li><strong>Ground the standstill power-down pin</strong> on one driver, confirm that prism holds its face for an hour, then do the other eleven. That is the large, free power saving.</li>
   <li><strong>Bring them back one at a time.</strong> Reconnect motors in small groups, checking after each that the supply stays steady.</li>
   <li><strong>Then run the identification sweep</strong> to sort out which channel drives which prism.</li>
 </ol>
