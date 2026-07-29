@@ -61,7 +61,7 @@
 <div class="wrap">
 
 <h1>Trivision — driver wiring and power reference</h1>
-<p class="sub">Adafruit TMC2209 breakout · StepperOnline 17HM19-2004S · Mean Well LRS-150-24<br>Prepared 26 July 2026, after the rewiring</p>
+<p class="sub">Adafruit TMC2209 breakout · StepperOnline 17HM19-2004S · Mean Well LRS-150-24<br>Prepared 26 July 2026, after the rewiring · current-dial figures corrected 29 July 2026</p>
 
 <h2>The green screw terminal, left to right</h2>
 
@@ -139,59 +139,94 @@
 
 <p>Any pair reading near 1.45 ohms is a coil. Any pair reading open is across two different coils. The 1.45 ohm figure is the resistance-per-phase from the datasheet.</p>
 
-<h2>Why all twelve motors pulse on power-up</h2>
+<h2>Setting the current dial, and knowing the number in advance</h2>
 
-<p class="lead">This is a power supply problem, not a wiring problem.</p>
+<p class="lead">Corrected 29 July 2026 after reading Adafruit's schematic for this exact board. The figures further down this page were wrong; they are fixed here.</p>
 
-<p>Three facts together settle it:</p>
+<p>The little dial sets a reference voltage that tells the chip how much current to push through the motor. You can read that voltage with a multimeter and set it deliberately instead of guessing.</p>
+
+<h3>Where to put the probes</h3>
 
 <ol class="steps">
-  <li>The identification sketch now on the Arduino sends <strong>no step pulses at all</strong> until you type a command. Nothing is telling the motors to move.</li>
-  <li><strong>All twelve</strong> pulse together. A wiring mistake affects one motor. Twelve motors moving in unison share only one thing — the power rail.</li>
-  <li>The Mean Well LRS-150-24 protects itself in <strong>hiccup mode</strong>: on overload it shuts down, waits, retries, and keeps retrying until the load drops. Every retry gives all twelve motors a jolt. That is the pulse.</li>
+  <li><strong>Unplug that driver's motor</strong> at the green screw terminal first. Then nothing can move and nothing can be damaged while you work.</li>
+  <li><strong>Apply 24 V.</strong> This is essential and not obvious — the dial is fed from the driver chip's <em>own</em> internal 5 V regulator, which only runs when 24 V is present. On USB power alone you will read zero volts and think the meter has failed.</li>
+  <li><strong>Black probe on ground.</strong> The ground screw terminal on the green block (second from the left, marked with a minus) is the easiest solid contact.</li>
+  <li><strong>Red probe on the metal adjustment screw of the dial itself.</strong> On this style of trimmer the screw is electrically the wiper. Confirm you are on the right spot by turning it slightly — the reading should move.</li>
+  <li>Meter on <strong>DC volts</strong>, 2 V range if it does not auto-range.</li>
 </ol>
 
-<h3>The arithmetic</h3>
-
-<p>Each motor holding still at its full 2 amps per phase burns roughly 11.6 watts in the windings. Twelve of them is about 139 watts, and the drivers are not perfectly efficient, so the supply sees around 155 watts — close to 6.5 amps at 24 volts.</p>
+<h3>The number to aim for</h3>
 
 <table>
-  <tr><th>Item</th><th>Figure</th></tr>
-  <tr><td>Supply rated current</td><td class="num">6.5 A</td></tr>
-  <tr><td>Supply rated power</td><td class="num">156 W</td></tr>
-  <tr><td>Twelve motors, standing still, pots at maximum</td><td class="num">≈ 155 W · ≈ 6.5 A</td></tr>
-  <tr><td>Headroom left for actually moving</td><td class="num">none</td></tr>
-  <tr><td>Overload protection engages at</td><td class="num">110–140% of rating</td></tr>
+  <tr><th>Current you want, per phase</th><th>Set the dial to</th></tr>
+  <tr><td class="num">0.8 A</td><td class="num">0.61 V</td></tr>
+  <tr><td class="num"><strong>1.0 A</strong> — recommended</td><td class="num"><strong>0.76 V</strong></td></tr>
+  <tr><td class="num">1.2 A</td><td class="num">0.91 V</td></tr>
+  <tr><td class="num">1.5 A</td><td class="num">1.14 V</td></tr>
+  <tr><td class="num">dial fully clockwise</td><td class="num">≈ 1.16 V ≈ 1.53 A</td></tr>
 </table>
 
-<p>So the supply is at its full rating while the sculpture does nothing whatsoever. Add the surge as twelve drivers charge their capacitors at the instant you plug in, and it goes straight past the trip point — shut down, retry, shut down, retry.</p>
-
-<p>Source: Mean Well LRS-150 series datasheet, specification table. Overload row reads: hiccup mode, recovers automatically after fault condition is removed.</p>
+<p>Each of the twelve dials is independent and they will not match out of the box. Setting all twelve is twelve measurements — about fifteen minutes, done once.</p>
 
 <div class="call">
-  <span class="tag">Your own design notes agree</span>
-  <p>The wiring manual states: "The system is calculated to draw ~80W under normal load. The 150W PSU provides ~50% safety headroom." Eighty watts across twelve motors is about <strong>1.5 amps each</strong>, not two. The supply was chosen for that figure and it is a sound choice — but only at that current.</p>
-  <p>Turned to maximum, the same twelve motors want closer to 155 watts. The dials, not the design, are what changed.</p>
+  <span class="tag">Ignore the formula you will find online</span>
+  <p>Every guide on the internet assumes a current-sensing resistor of 0.11 ohms, because that is what the cheap 3D-printer driver boards use. <strong>Adafruit's board uses 0.05 ohms</strong> — components R1 and R2 in their published schematic, "0.05Ω/0.25W". Following the internet's numbers sets roughly 50% more current than intended.</p>
+  <p>The working figure for this board: <strong>current in amps = 1.31 × the voltage you measure</strong>, or turned round, <strong>volts = 0.76 × the current you want</strong>.</p>
 </div>
+
+<div class="call">
+  <span class="tag">The dial cannot reach 2 amps</span>
+  <p>Adafruit feeds the dial through a fixed divider — 33 kΩ from the chip's 5 V regulator into a 10 kΩ trimmer — so the dial's full travel spans zero to about 1.16 volts, which is about <strong>1.5 amps per phase</strong>. Adafruit's "up to 2A max" quotes the <em>peak</em> of the current waveform, about 2.16 amps, which is a different number from the one a motor is rated at.</p>
+  <p>Sources: Adafruit's published schematic for this breakout (R1, R2 = 0.05 Ω; 33 kΩ into a 10 kΩ trimmer off the chip's 5VOUT pin) and the TMC2209 datasheet current-setting equation.</p>
+</div>
+
+<h2>Why all twelve motors pulse on power-up</h2>
+
+<p class="lead">Not yet settled. The supply-overload explanation below was built on a current figure the hardware cannot actually reach, so it is weaker than it first appeared.</p>
+
+<p>What is still solid:</p>
+
+<ol class="steps">
+  <li>The identification sketch on the Arduino sends <strong>no step pulses at all</strong> until you type a command. Nothing in the code is telling the motors to move.</li>
+  <li><strong>All twelve</strong> pulse together. A wiring mistake affects one motor. Twelve motors moving in unison share only two things — the power rail and the control lines.</li>
+  <li>The Mean Well LRS-150-24 does protect itself in <strong>hiccup mode</strong>: on overload it shuts down, waits, and retries. Every retry would jolt all twelve motors at once.</li>
+</ol>
+
+<h3>The corrected arithmetic</h3>
+
+<p>A microstepping driver holds a constant current <em>vector</em> at standstill, so the two coils share it rather than each carrying the full set current. The heat in one motor is the set peak current squared, times the winding resistance — not twice that.</p>
 
 <table>
   <tr><th>Current per phase</th><th>Whole sculpture, standing still</th><th>Against a 156 W supply</th></tr>
-  <tr><td class="num">2.0 A (dial at maximum)</td><td class="num">≈ 155 W</td><td>at the limit — hiccups</td></tr>
-  <tr><td class="num">1.5 A (the design figure)</td><td class="num">≈ 87 W</td><td>comfortable</td></tr>
-  <tr><td class="num">1.0 A</td><td class="num">≈ 39 W</td><td>very comfortable, runs cool</td></tr>
+  <tr><td class="num">1.53 A — dial fully clockwise, the true maximum</td><td class="num">≈ 110–120 W</td><td>about three-quarters loaded — tight, not a trip</td></tr>
+  <tr><td class="num">1.0 A — recommended</td><td class="num">≈ 50–55 W</td><td>comfortable, runs cool</td></tr>
+  <tr><td class="num">2.0 A</td><td class="num">(≈ 155 W)</td><td><strong>the dial cannot reach this</strong></td></tr>
 </table>
 
-<p>The dial turns clockwise for more current — Adafruit's guide: "when all the way to the right we can get up to 2A max." So counter-clockwise reduces it.</p>
+<p>Overload protection engages at 110–140% of rating, which is 172–218 watts. Even with every dial at maximum the sculpture standing still does not get there. The driver-loss share of those figures is estimated from the chip's on-resistance rather than measured, so treat the range as a range.</p>
+
+<p>So the dials are worth turning down for heat, noise and headroom — but they are probably not the cause of the pulsing on their own.</p>
+
+<div class="call">
+  <span class="tag">The other candidate</span>
+  <p>If 24 V arrives while the Arduino is unpowered or held in reset, all twelve step and direction lines are floating inputs. Floating inputs pick up noise, and noise on a step line is a step command. That would make all twelve motors twitch at once just as convincingly as a supply hiccup, and it is exactly what the established power-on order guards against: USB first, confirm the serial banner, <em>then</em> 24 V.</p>
+</div>
 
 <h2>What to do, in order</h2>
 
 <ol class="steps">
-  <li><strong>Prove it in two minutes.</strong> Unplug eleven motors at the terminal blocks and leave one connected. Power up. If the pulsing stops, the supply was the cause and the wiring is fine.</li>
-  <li><strong>Watch the rail.</strong> Put a meter across the 24V output while it pulses. If the voltage collapses and recovers in time with the pulsing, that is the hiccup, seen directly.</li>
-  <li><strong>Turn the current dials down.</strong> Each board's small potentiometer, marked ILimit 0 to 2A, is almost certainly near maximum. You do not need 2 amps. At three-quarters of one revolution per minute the prisms ask very little of the motors. Around 1 amp puts the whole sculpture near 35 watts instead of 155 — comfortable, cooler, and quieter.</li>
+  <li><strong>Watch the rail — this one measurement decides it.</strong> Put a meter across the 24 V output while it pulses. If the voltage collapses and recovers in time with the pulsing, it is the supply. If the voltage holds steady, the supply is innocent and the cause is on the signal side.</li>
+  <li><strong>Check the power-on order.</strong> Confirm the Arduino is powered and running the sketch — serial banner visible — <em>before</em> 24 V goes on. If the pulsing only happens when 24 V leads, that is the answer.</li>
+  <li><strong>Prove it in two minutes.</strong> Unplug eleven motors at the terminal blocks and leave one connected. Power up. If the pulsing stops, it points at the shared rail rather than the wiring.</li>
+  <li><strong>Set the current dials deliberately</strong> using the voltage table above. Around 1 amp puts the whole sculpture near 50 watts instead of 110 — comfortable, cooler, and quieter.</li>
   <li><strong>Bring them back one at a time.</strong> Reconnect motors in small groups, checking after each that the supply stays steady.</li>
   <li><strong>Then run the identification sweep</strong> to sort out which channel drives which prism.</li>
 </ol>
+
+<div class="call">
+  <span class="tag">Your own design notes</span>
+  <p>The wiring manual states: "The system is calculated to draw ~80W under normal load. The 150W PSU provides ~50% safety headroom." Eighty watts across twelve motors is about 1.5 amps each. That is the top of what the dial can do, and the supply was chosen sensibly for it.</p>
+</div>
 
 <div class="call">
   <span class="tag">A note on the black-and-red theory</span>
@@ -200,7 +235,9 @@
 
 <div class="foot">
   Sources — motor: <em>17HM19-2004S_Full_Datasheet.pdf</em> in this project folder.
-  Driver: <a href="https://learn.adafruit.com/adafruit-tmc2209-stepper-motor-driver-breakout-board/pinouts">Adafruit TMC2209 breakout pinouts</a>.
+  Driver: <a href="https://learn.adafruit.com/adafruit-tmc2209-stepper-motor-driver-breakout-board/pinouts">Adafruit TMC2209 breakout pinouts</a>,
+  and the board's own schematic — <a href="https://github.com/adafruit/Adafruit-TMC2209-Breakout-PCB">Adafruit-TMC2209-Breakout-PCB</a> — which is where the 0.05 Ω sense resistors and the 33 kΩ / 10 kΩ dial divider were read.
+  Chip: <a href="https://www.analog.com/media/en/technical-documentation/data-sheets/TMC2209_datasheet_rev1.09.pdf">TMC2209 datasheet rev 1.09</a>, current-setting equation.
   Supply: <a href="https://www.meanwell.com/Upload/PDF/LRS-150/LRS-150-SPEC.PDF">Mean Well LRS-150 series specification</a>.
 </div>
 
