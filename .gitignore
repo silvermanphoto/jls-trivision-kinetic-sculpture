@@ -47,5 +47,7 @@ __pycache__/
 *.key
 *.pem
 
-# ── Claude Code local settings ──
-.claude/
+# ── Claude Code ──
+# Local settings stay private; project skills are documentation and get tracked.
+.claude/*
+!.claude/skills/
