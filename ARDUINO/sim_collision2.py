@@ -1,3 +1,4 @@
+# RETIRED: superseded by prism_clearance.py. The February 2026 clearance scripts disagree with one another; kept for history only, do not rely on their results.
 import math
 def check_clearance_trace(cascade_dir, rot_dir, stagger_deg):
     R = 2.45

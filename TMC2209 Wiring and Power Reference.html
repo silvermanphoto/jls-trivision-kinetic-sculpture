@@ -93,8 +93,8 @@
 <p>Source: the motor's own datasheet, <em>17HM19-2004S_Full_Datasheet.pdf</em>, page 1, "Motor Connection" table. Terminal meanings from Adafruit's TMC2209 pinout documentation.</p>
 
 <div class="call">
-  <span class="tag">Swapping a pair is harmless</span>
-  <p>If you reverse the two wires within one coil — black and green with each other, say — the motor still runs perfectly, it just turns the other way. Only mixing wires <em>between</em> the two coils causes a fault.</p>
+  <span class="tag">Swapping a pair reverses the motor</span>
+  <p>If you reverse the two wires within one coil — black and green with each other, say — the motor runs normally but turns the other way. Only mixing wires <em>between</em> the two coils causes a fault. On this sculpture a reversed motor is not harmless: in a sketch that turns every prism together, a reversed prism turns against its neighbours, and neighbouring prisms may touch. Correct a reversed prism in software before running any sketch that turns more than one prism at a time.</p>
 </div>
 
 <h2>The other side — the pin header to the Arduino</h2>

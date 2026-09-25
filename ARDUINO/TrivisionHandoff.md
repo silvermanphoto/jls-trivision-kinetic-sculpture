@@ -47,6 +47,7 @@ These rules govern how you operate on this project. Violating them will cause ha
 - When in doubt — especially about microstepping mode, wiring pin assignments, or any action that writes to hardware — **ASK rather than guessing.** Confirm before writing to hardware.
 - **Speed is MISSION CRITICAL.** Never exceed speeds the user has explicitly authorized. This is an art installation with heavy, delicate prisms — no lurching, no racing, no sudden direction changes without deceleration to zero first.
 - The user has described this as "hypnotic and gentle, not a lab centrifuge." Treat every speed and acceleration parameter as safety-critical.
+- **Adjacent prisms may collide.** In the simulators' geometry a prism's corners sweep a circle wider than the shaft pitch, so neighbours at different angles can touch; the as-built pitch has not been measured. Only exact unison from square, or one prism at a time beside square neighbours, is known to be safe. Check any other pattern with `ARDUINO/prism_clearance.py` before upload, and after any rewiring confirm every motor turns the same way before running a sketch that moves more than one prism.
 
 ### User Preferences
 - Never overwrite code without forking.

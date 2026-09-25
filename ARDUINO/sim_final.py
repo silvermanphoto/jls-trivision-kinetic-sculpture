@@ -1,3 +1,4 @@
+# RETIRED: superseded by prism_clearance.py. The February 2026 clearance scripts disagree with one another; kept for history only, do not rely on their results.
 import math
 
 def get_vertices(theta, offset_x):

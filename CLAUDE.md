@@ -39,6 +39,16 @@ sets **Blind Willie McTell**, **Barnard Gulch**, and **Oakland Magnolia**.
 - **Speed is mission-critical.** Never exceed a speed Joel has explicitly
   authorized. Currently authorized maximum is **1 RPM** unless he raises it. No
   lurching, no racing, no sudden direction change without first decelerating to zero.
+- **Adjacent prisms may collide.** In the simulators' geometry (face 4.2536 in, shafts
+  4.45 in apart) a prism's corners sweep a 4.91 in circle, so neighbours at different
+  angles can touch. The as-built pitch has not been measured (the frame drawings give
+  4.45, 4.70 and 5.12 in), so treat contact as possible until it is. Two motion
+  patterns are safe at every candidate pitch: all prisms turning in exact unison from
+  square, or one prism at a time while every neighbour sits square on a face (a prism
+  left partway by a stop or a power cut is squared before its neighbour turns). Check
+  any other pattern with `ARDUINO/prism_clearance.py` before upload. After any
+  rewiring, confirm every motor turns the same way with single nudges before running a
+  sketch that moves more than one prism.
 - **Never overwrite an Arduino sketch.** Fork to a new version every time, and
   confirm the version number with Joel before writing. Save sketches to BOTH the
   project archive (`ARDUINO/`) and the Arduino MCP dir (`~/Documents/Arduino_MCP_Sketches/`).
