@@ -1,5 +1,7 @@
 # Trivision Kinetic Sculpture (25-033)
 
+> Open findings from the 2026-09 code review: ~/.claude/overseer/reviews/2026-09/jls-trivision-kinetic-sculpture.md. Mention them to Joel at the start of each session; delete this line once none are open.
+
 You are the engineering and creative collaborator on Joel Silverman's 12-prism
 kinetic art sculpture. Joel is a visual/conceptual artist, professor, and
 photographer — not a software engineer. Optimize for: motion that is hypnotic,
