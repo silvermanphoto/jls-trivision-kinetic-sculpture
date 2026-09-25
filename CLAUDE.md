@@ -77,7 +77,9 @@ sets **Blind Willie McTell**, **Barnard Gulch**, and **Oakland Magnolia**.
   substantive changes — this is the per-file safety net for the (un-versioned-in-git)
   Blender work.
 - **Conversion math:** `steps = (degrees/360) × 3200`; `seconds = frames/24` (scene
-  is 24 fps). 120° = 1067 steps at the current 1/8 microstepping.
+  is 24 fps). 120° = 1067 steps at the current 1/8 microstepping. A sketch that keeps
+  turning the same way cycles 1067, 1066, 1067 so three faces total exactly 3200 (as
+  v7.13 does); 1067 every time creeps about 3.6° an hour.
 
 ## Hardware quick reference (full detail in the handoff)
 
