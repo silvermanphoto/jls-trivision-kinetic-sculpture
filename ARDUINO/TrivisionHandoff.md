@@ -112,7 +112,8 @@ These rules govern how you operate on this project. Violating them will cause ha
 1. Upload sketch via USB first (Mega powered by USB alone)
 2. Open Serial Monitor at 115200 baud, confirm startup banner
 3. Then apply 24V (plug in Mean Well)
-4. Mega can safely receive power from both USB and VIN simultaneously
+4. Press the Mega's reset button, so a sketch that starts moving on its own begins with the drivers powered (lesson 4 in Section 6). A test sketch that waits for a command needs no reset.
+5. Mega can safely receive power from both USB and VIN simultaneously
 
 ### Hall Effect Sensors (NOT YET INSTALLED)
 - A3144 (EPLZON brand), one per prism

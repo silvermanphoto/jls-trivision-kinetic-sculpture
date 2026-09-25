@@ -56,9 +56,11 @@ sets **Blind Willie McTell**, **Barnard Gulch**, and **Oakland Magnolia**.
   upload. When in doubt about a hardware action, ask rather than guess.
 - **Hall sensor pins (2–13) are reserved but NOT wired** — do not touch them in code
   until Joel says the sensors are installed.
-- **Power-on order:** upload via USB first, confirm the serial banner at 115200 baud,
-  then apply 24V. Check the board port with `list_boards` before every upload
-  (it flips between `usbmodem2101` and `usbmodem1101`).
+- **Power-on order:** upload over USB with 24 V off, confirm the serial banner at
+  115200 baud, apply 24 V, then press the Mega's reset button so motion starts with
+  the drivers powered. Test sketches that wait for a command need no reset. Check the
+  board port with `list_boards` before every upload (it flips between `usbmodem2101`
+  and `usbmodem1101`).
 
 ## Conventions
 
