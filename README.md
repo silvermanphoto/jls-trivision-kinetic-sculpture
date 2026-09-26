@@ -46,9 +46,10 @@ choreographed like a musical score. Current image sets: *Blind Willie McTell*,
 ## How it works
 
 **Choreography is authored in Blender.** Each prism is a keyframed object in a
-Blender scene; the animation curves are extracted and converted into integer
-step/timing tables (`steps = degrees/360 × 3200` at 1/8 microstepping, 24 fps
-timebase) that compile straight into the Arduino firmware.
+Blender scene. The plan is to extract the animation curves and convert them into
+integer step/timing tables (`steps = degrees/360 × 3200` at 1/8 microstepping,
+24 fps timebase) that compile straight into the Arduino firmware; the patterns
+running today are written by hand in the firmware.
 
 **One Arduino Mega 2560 drives all twelve motors.** Each prism has a NEMA 17
 stepper (0.9°/step) on a TMC2209 silent driver. The proven motion architecture
@@ -87,7 +88,9 @@ generates the CNC toolpath SVGs for the frame boxes.
 
 ## Status
 
-A 4-motor prototype has verified the full motion architecture end to end
-(smooth S-curve starts and stops at sub-1-RPM speeds, no resonance, inaudible
-at gallery distance). The 12-motor firmware expansion and hall-sensor homing
-are the active fronts; see `ARDUINO/TrivisionHandoff.md` for the roadmap.
+A 4-motor prototype verified the motion architecture end to end (smooth S-curve
+starts and stops at sub-1-RPM speeds, no resonance, inaudible at gallery
+distance). The same engine now drives all twelve prisms on the sculpture: the
+v7 choreography sketches turn them all together or in a waterfall. Blender
+playback and hall-sensor homing are the next fronts; see
+`ARDUINO/TrivisionHandoff.md` for the roadmap.
