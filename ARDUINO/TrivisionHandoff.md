@@ -4,6 +4,8 @@
 **Author:** Joel Silverman (visual artist, college professor, photographer)
 **Purpose:** Complete context transfer for an AI coding agent to continue development of Arduino-controlled kinetic art sculpture.
 
+> **Status note, 26 September 2026.** This is the February 2026 spec. Its hardware, pin map, conversion math and homing design still hold; its status sections (which sketch family is current, what is uploaded, what is untested) are history. For current state read `git log`, `TMC2209 Wiring and Power Reference.html` in the project root and the arduino-expert skill; for what is on the board, read the serial banner at 115200 baud. Since February the twelve-motor Timer1 choreography (`TrivisionChoreo_v7_*`) has replaced `TrivisionCascade` and run on the sculpture, the STEP port map in Section 7 has been verified, and Section 7's interrupt budget has been replaced with figures counted from the compiled program.
+
 ---
 
 ## SECTION 1: WHAT THIS PROJECT IS
@@ -236,9 +238,21 @@ The v15 Timer1 ISR architecture was proven on 4 motors using direct port registe
 | 11    | 45       | PORTL.4  | 4   |
 | 12    | 46       | PORTL.3  | 3   |
 
-**IMPORTANT:** Verify these port mappings against the Arduino Mega 2560 pinout diagram before using. The pin-to-port mapping above was derived from the ATmega2560 datasheet and should be confirmed with the uploaded `A000067fullpinout.pdf` in the project files.
+**Verified (September 2026):** all twelve rows above match `variants/mega/pins_arduino.h` in ArduinoCore-avr, the table the compiler itself uses. The February note here asked for this check against the pinout PDF; it is closed.
 
-The ISR must service all 12 motors within the 50µs tick window. At 16MHz, that's 800 CPU cycles per tick. Each motor's ISR body is roughly 20–30 cycles (decrement counter, conditional branch, port write, table lookup), so 12 motors ≈ 240–360 cycles — well within budget.
+The ISR must service all 12 motors within the 50µs tick window: 800 CPU cycles at 16MHz. The February estimate here (20–30 cycles a motor, 240–360 in all) was 3 to 10 times too low. Counted from the compiled v7.10 interrupt at ATmega2560 instruction timings (September 2026 code review, finding TRI-08):
+
+| Case | Cycles | Time |
+|------|--------|------|
+| Fixed cost per tick (entry, 22 registers saved and restored) | 131 | 8 µs |
+| Each idle motor | 24 | |
+| Each running motor that does not step | 41 | |
+| Each motor that steps (two runtime shift loops for `1 << stepBit[m]`, 32-bit volatile reloads, struct address recomputed with two multiplies) | 196–276 | |
+| Nothing moving | 418 | 26 µs, 52% of the processor |
+| Twelve running, none stepping | 622 | 39 µs |
+| All twelve stepping on the same tick, as the all-together pattern does | 2,884–3,028 | 180–189 µs, 3.6–3.8 ticks |
+
+Harmless at 0.75 RPM: each all-step tick drops two Timer1 compare matches, but the lost time delays every motor equally, so sync holds and the pattern runs about 0.4% slow. `loop()` gets 48% of the processor with nothing moving and 22% while twelve motors run, less than the design assumed, and the STEP pulse is high for 2.3–4.5 µs. Plan any added interrupt work (Hall-sensor checks, per-prism Blender tables) or higher speed against these figures. If headroom is needed: store step masks instead of bit numbers (removes both shift loops), copy each motor's fields into locals once per tick and write back once, use `uint16_t` step counts (never above 3200), and compute `decelStart` at launch. Confirm with a spare pin toggled on ISR entry and exit and a scope.
 
 ---
 

@@ -23,6 +23,23 @@ port 9876, started from the BlenderMCP panel inside Blender.
 
 Fusion's internal units are **centimetres** — divide by 2.54 for inches.
 
+## Tool setup
+
+- **Blender MCP** on **port 9876** — start the server from the BlenderMCP sidebar
+  tab (N-panel) inside Blender; the socket lives in Blender, not the bridge process.
+  Follow the `blender-projects` skill (outliner/collection discipline, verify the
+  live scene before writing `bpy`).
+- **Fusion 360 MCP** (added to Claude Code 2026-06-24, user scope). Streamable-HTTP
+  server at `http://127.0.0.1:27182/mcp` (the bare root 404s — the endpoint is
+  `/mcp`). Requires Fusion running with the MCP server enabled in **Preferences >
+  General > API > Fusion MCP Server**. Note: enabling the Autodesk Fusion *connector*
+  in Claude Desktop does NOT expose tools to Claude Code — it had to be added here
+  separately (`claude mcp add --scope user --transport http fusion <url>`). Tools:
+  `fusion_mcp_read` (incl. `screenshot`, `document` queries, `apiDocumentation`),
+  `fusion_mcp_execute` (run a Python `def run(_context)` script, or open/close/save a
+  doc), `fusion_mcp_update` (undo/redo), `fusion_mcp_electronics_read`. Fusion API
+  internal units are **cm** — divide by 2.54 for inches.
+
 ## Fusion / CAD gotchas (learned 2026-06-24)
 
 - **A broken third-party MCP shim spams script stdout.** A failing AuraFriday
