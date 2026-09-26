@@ -2,10 +2,17 @@ import bpy
 import os
 import math
 
-def setup_scene():
-    # Clear existing objects
-    bpy.ops.object.select_all(action='SELECT')
-    bpy.ops.object.delete()
+def run_in_new_scene(build, name):
+    """Run build() in a new, empty scene, so nothing in the open file is deleted.
+    The window switches to the new scene; the scene that was open is untouched."""
+    scene = bpy.data.scenes.new(name)
+    scene.world = bpy.context.scene.world      # same background as the open scene
+    window = bpy.context.window or next(iter(bpy.context.window_manager.windows), None)
+    if window is not None:
+        window.scene = scene
+    with bpy.context.temp_override(window=window, scene=scene,
+                                   view_layer=scene.view_layers[0]):
+        build()
 
 def setup_camera_and_lights(target_obj):
     # Add Camera
@@ -51,8 +58,6 @@ def run():
     output_path = "/Users/joelsilverman/Desktop/2025 Files/25-033 Trivision Kinetic Sculpture/ILLUSTRATOR FILES FOR CNC/BOTTOM_RAIL_render.png"
     extrude_height = 0.015
 
-    setup_scene()
-
     print(f"Checking file: {svg_path}")
     if not os.path.exists(svg_path):
         print(f"File NOT found: {svg_path}")
@@ -81,7 +86,7 @@ def run():
     
     if not selected:
         # Fallback: try to find objects that look like the import (Curve)
-        # created just now (since we cleared scene)
+        # created just now (the scene started empty)
         candidates = [o for o in bpy.context.scene.objects if o.type == 'CURVE']
         if candidates:
             print(f"Found {len(candidates)} curve objects. Selecting them.")
@@ -130,4 +135,4 @@ def run():
     print("Render complete.")
 
 if __name__ == "__main__":
-    run()
+    run_in_new_scene(run, "Bottom rail render")

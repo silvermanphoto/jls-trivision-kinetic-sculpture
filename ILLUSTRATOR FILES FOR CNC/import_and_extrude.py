@@ -21,10 +21,8 @@ def run_import_and_extrude():
     global_scale = 1.0
 
     # --- SETUP ---
-    # Optional: Clear Scene
-    bpy.ops.object.select_all(action='SELECT')
-    bpy.ops.object.delete()
-    
+    # Runs in a new, empty scene (run_in_new_scene below): nothing is deleted.
+
     # Ensure Unit System
     bpy.context.scene.unit_settings.system = 'METRIC'
     bpy.context.scene.unit_settings.length_unit = 'METERS'
@@ -120,5 +118,17 @@ def run_import_and_extrude():
 
     print("Done! All parts imported and arranged.")
 
+def run_in_new_scene(build, name):
+    """Run build() in a new, empty scene, so nothing in the open file is deleted.
+    The window switches to the new scene; the scene that was open is untouched."""
+    scene = bpy.data.scenes.new(name)
+    scene.world = bpy.context.scene.world      # same background as the open scene
+    window = bpy.context.window or next(iter(bpy.context.window_manager.windows), None)
+    if window is not None:
+        window.scene = scene
+    with bpy.context.temp_override(window=window, scene=scene,
+                                   view_layer=scene.view_layers[0]):
+        build()
+
 if __name__ == "__main__":
-    run_import_and_extrude()
+    run_in_new_scene(run_import_and_extrude, "CNC parts")
