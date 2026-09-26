@@ -257,7 +257,7 @@
 
 <div class="call">
   <span class="tag">The other candidate</span>
-  <p>If 24 V arrives while the Arduino is unpowered or held in reset, all twelve step and direction lines are floating inputs. Floating inputs pick up noise, and noise on a step line is a step command. That would make all twelve motors twitch at once just as convincingly as a supply hiccup, and it is exactly what the established power-on order guards against: USB first, confirm the serial banner, <em>then</em> 24 V.</p>
+  <p>If 24 V arrives while the Arduino is unpowered or held in reset, its twelve step and direction outputs are switched off. Noise on a step line is a step command, so floating lines could make all twelve motors twitch at once just as convincingly as a supply hiccup. The lines do not float, though. Adafruit's schematic for this board puts a 20 kΩ resistor from the step input to ground, and the driver chip holds its direction input low with a built-in resistor (datasheet rev 1.09, section 2.2). That makes this the less likely cause. The established power-on order keeps it out of the way regardless: USB first, confirm the serial banner, <em>then</em> 24 V. The reset press that now ends that order switches the Arduino's outputs off for a moment, and the same resistors hold the lines low through it.</p>
 </div>
 
 <h2>What to do, in order</h2>
