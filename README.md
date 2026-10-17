@@ -45,6 +45,10 @@ choreographed like a musical score. Current image sets: *Blind Willie McTell*,
 
 ## How it works
 
+[Diagram source](docs/diagrams/architecture.mmd)
+
+![How motion gets from the Blender scene and the Mac to the twelve prisms; dashed boxes are planned, not built](docs/diagrams/rendered/mermaid/architecture.png)
+
 **Choreography is authored in Blender.** Each prism is a keyframed object in a
 Blender scene. The plan is to extract the animation curves and convert them into
 integer step/timing tables (`steps = degrees/360 × 3200` at 1/8 microstepping,

@@ -1,0 +1,77 @@
+%%{init: {"themeVariables": {"fontSize": "18px", "fontFamily": "Lato"}, "flowchart": {"nodeSpacing": 45, "rankSpacing": 60, "padding": 18, "wrappingWidth": 420}}}%%
+%% Trivision Kinetic Sculpture: how motion gets from the Mac to the twelve prisms.
+%% Solid boxes and lines exist today. Dashed gray boxes and dotted lines are planned, not built.
+flowchart TB
+
+  subgraph MAC["On the Mac"]
+    direction LR
+    FUSION["Fusion 360<br/>the true frame and<br/>billboard geometry"]
+    BLENDER["Blender choreography scene (v20)<br/>NORTH and NORTHWEST billboards<br/>each prism keyframed<br/>at 24 frames a second"]
+    EXPORT["PLANNED: export to step tables<br/>steps = degrees ÷ 360 × 3200<br/>seconds = frames ÷ 24"]
+    HAND["Motion patterns<br/>written by hand<br/>(every pattern today)"]
+    CLEAR["Prism clearance checker<br/>do neighbors touch<br/>at these angles?<br/>pass or fail before upload"]
+    MONITOR["Serial monitor, 115200<br/>startup banner names the sketch<br/>test commands: 1–12 nudge,<br/>t1–t12 face turn, f finish,<br/>b back out, 3=7R record a prism"]
+  end
+
+  subgraph MEGA["Arduino Mega 2560 (holds one sketch at a time)"]
+    direction LR
+    TEST["Hardware test sketch (v08)<br/>one prism at a time,<br/>waits for a command;<br/>finds which channel drives<br/>which prism, and which<br/>motors turn backwards"]
+    DIRTABLE["Per-prism<br/>direction table<br/>flips any motor<br/>wired backwards"]
+    SHOW["Show sketch (choreography v7.14)<br/>all twelve turn one face together<br/>0.75 RPM, forever<br/>faces of 1067, 1066, 1067 steps<br/>so the prisms never creep"]
+    ENGINE["Shared motion engine<br/>timer tick every 50 µs<br/>smooth 200-step start and stop<br/>won't compile above 1 RPM"]
+  end
+
+  subgraph SCULPT["In the sculpture"]
+    direction LR
+    DRIVERS["12 TMC2209 drivers<br/>silent mode<br/>jumpers set 1/8 steps"]
+    MOTORS["12 NEMA 17 motors<br/>3200 microsteps<br/>per turn"]
+    PRISMS["12 prisms<br/>three photographs<br/>faces 120° apart"]
+  end
+
+  subgraph POWER["Power"]
+    direction LR
+    PSU["Mean Well<br/>24 V supply"]
+    BUCK["9 V buck<br/>converter"]
+    ORDER["Power-on order<br/>1. upload over USB, 24 V off<br/>2. check the banner<br/>3. switch on 24 V<br/>4. press the Mega's reset"]
+  end
+
+  HALL["PLANNED: Hall sensors and homing<br/>12 magnet sensors on pins 2–13<br/>(reserved, not wired)<br/>find true square, correct drift"]
+  SENSE["PLANNED, optional: 24 V sense jumper<br/>driver 1's dial leg to pin A0<br/>show sketch waits for 24 V"]
+
+  FUSION -- "STL in millimeters,<br/>for looks only" --> BLENDER
+  BLENDER -. "keyframe angles<br/>and timing" .-> EXPORT
+  EXPORT -. "step tables" .-> CLEAR
+  HAND -- "angles over time" --> CLEAR
+  CLEAR -- "pass: fork a new version,<br/>Joel approves the upload" --> SHOW
+
+  MONITOR <-->|"USB: upload, banner,<br/>test commands"| TEST
+  TEST -- "prints it; pasted<br/>in by hand" --> DIRTABLE
+  DIRTABLE --> SHOW
+  SHOW --> ENGINE
+  TEST --> ENGINE
+
+  ENGINE -- "step pulse and direction,<br/>one pair per prism" --> DRIVERS
+  DRIVERS -- "coil current" --> MOTORS
+  MOTORS -- "shaft" --> PRISMS
+
+  PSU -- "24 V" --> DRIVERS
+  PSU -- "24 V" --> BUCK
+  BUCK -- "9 V" --> MEGA
+
+  HALL -.-> ENGINE
+  SENSE -.-> SHOW
+
+  classDef built fill:#f6f1e8,stroke:#5a4632,stroke-width:2px,color:#2b2118
+  classDef hardware fill:#e3ecf3,stroke:#2f5673,stroke-width:2px,color:#16293a
+  classDef power fill:#f8e7cf,stroke:#a8641c,stroke-width:2px,color:#3d2408
+  classDef planned fill:#f2f2f2,stroke:#8a8a8a,stroke-width:2px,stroke-dasharray:7 5,color:#555555
+
+  class FUSION,BLENDER,HAND,CLEAR,MONITOR,SHOW,TEST,ENGINE,DIRTABLE built
+  class DRIVERS,MOTORS,PRISMS hardware
+  class PSU,BUCK,ORDER power
+  class EXPORT,HALL,SENSE planned
+
+  style MAC fill:#ffffff,stroke:#b9ab96,stroke-width:1px,color:#2b2118
+  style MEGA fill:#ffffff,stroke:#b9ab96,stroke-width:1px,color:#2b2118
+  style SCULPT fill:#ffffff,stroke:#9fb3c4,stroke-width:1px,color:#16293a
+  style POWER fill:#ffffff,stroke:#d2a979,stroke-width:1px,color:#3d2408
