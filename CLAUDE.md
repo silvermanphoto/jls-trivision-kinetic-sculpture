@@ -28,6 +28,11 @@ plainly, then follow his instruction.
   updated 2026-10-17; the three new sketches rebuild to identical sizes); Arduino IDE 2.3.10 (newest, unused: the MCP builds).
 - **Audits:** September review (one item open, TRI-12) and the October Opus 5.5 audit
   (all five fixed) are in `~/.claude/overseer/reviews/`.
+- **Motor engine audit (2026-10-17):** no defects in CCW-1rpm-test v7.16 or HWTest v09.
+  With all twelve stepping, the interrupt runs about 3,200 cycles (200 µs, four ticks),
+  so cruise is about 0.99 RPM, the same for every prism. Step pulse 2.3–4.5 µs against
+  the driver's 100 ns minimum; DIR set 5 µs ahead against 20 ns. Opening the Serial
+  Monitor resets the board: mid-move that is a hard stop and the position is forgotten.
 
 ## What this is
 
