@@ -22,7 +22,10 @@ corner across one face) and the measured shaft-to-shaft pitch.
   python3 prism_clearance.py --pitch 4.70 --pair 12 0      one pair of angles, left then right
   python3 prism_clearance.py --pitch 4.70 --csv move.csv   a planned move: one row per moment, one column
                                                            per prism left to right, angles in degrees;
-                                                           every neighbouring pair is checked
+                                                           every neighbouring pair is checked. A row with
+                                                           a blank or unreadable cell, or a different
+                                                           number of prisms, stops the check; rows more
+                                                           than 1 degree apart draw a warning
 
 Exit status 1 when the checked motion touches; for the summary, when either of
 the two motions the project instructions call safe (exact unison from square,
@@ -203,14 +206,32 @@ def main():
         print(f"Left {a.pair[0]:g}, right {a.pair[1]:g} degrees: gap {m:.3f} in  {verdict(m)}")
     elif a.csv:
         m, where, touching, checks, rows = math.inf, None, 0, 0, 0
+        width, prev, jumps, notes = None, None, 0, 0
         with open(a.csv, newline="") as f:
             for line_no, row in enumerate(csv.reader(f), 1):
-                try:
-                    angles = [float(c) for c in row if c.strip() != ""]
-                except ValueError:
-                    continue  # a header or a note
-                if len(angles) < 2:
+                cells = [c.strip() for c in row]
+                while cells and cells[-1] == "":
+                    cells.pop()  # trailing commas
+                if not cells:
                     continue
+                try:
+                    float(cells[0])
+                except ValueError:
+                    notes += 1  # a header or a note: the first cell is not a number
+                    continue
+                try:
+                    angles = [float(c) for c in cells]
+                except ValueError:
+                    sys.exit(f"{a.csv} line {line_no}: a blank or unreadable cell; every prism needs an angle")
+                if len(angles) < 2:
+                    sys.exit(f"{a.csv} line {line_no}: needs at least two prisms")
+                if width is None:
+                    width = len(angles)
+                elif len(angles) != width:
+                    sys.exit(f"{a.csv} line {line_no}: {len(angles)} prisms, earlier rows have {width}")
+                if prev is not None and max(abs(x - y) for x, y in zip(angles, prev)) > 1.0:
+                    jumps += 1
+                prev = angles
                 rows += 1
                 for p in range(len(angles) - 1):
                     g = gap(a.face, a.pitch, angles[p], angles[p + 1])
@@ -222,6 +243,11 @@ def main():
             sys.exit(f"{a.csv}: no rows of angles found")
         print(f"{rows} rows, {checks} neighbour checks: minimum gap {m:.3f} in  {verdict(m)}"
               f" (line {where[0]}, prisms {where[1]} and {where[2]}); {touching} checks touching")
+        if notes:
+            print(f"  {notes} line(s) skipped as headers or notes (first cell not a number)")
+        if jumps:
+            print(f"  WARNING: {jumps} step(s) between rows move a prism more than 1 degree;"
+                  f" contact between those rows is not checked, so add rows")
     else:
         return summary(a.face, a.pitch, a.step)
     return 0 if m > 0 else 1
