@@ -10,6 +10,24 @@ physical-label-based instructions over technical jargon. The hardware-safety and
 speed invariants come first; if Joel's instruction conflicts with one, say so once,
 plainly, then follow his instruction.
 
+## Current state (2026-10-17)
+
+- **On the board:** last confirmed v7.10 (flash read-back, 2026-07-26). Nothing newer
+  has been uploaded. Opening the serial port resets the Mega and v7.10 starts turning
+  three seconds later, so read the banner only with 24 V off.
+- **Ready, compiled, not uploaded:** show pattern v7.15, test tool `TrivisionHWTest_v09`,
+  and `CCW-1rpm-test_v7_16`: all twelve together, one full turn at 1 RPM CCW on the
+  command `g`, eased over 45 degrees each end; anything typed stops it gently.
+- **Next, at the bench (Joel present, each upload approved):** 24 V off, upload HWTest
+  v09; set every current dial to 1.00 V; square the prisms by hand; `n` nudges each
+  prism in turn to confirm direction and order; if any is reversed or out of order,
+  its four printed tables go into the sync test first; then upload the sync test and
+  type `g`.
+- **Toolchain (2026-10-17):** AVR board package 1.8.8 (newest); arduino-cli 1.4.1,
+  1.5.1 available through Homebrew; Arduino IDE 2.3.10 (newest, unused: the MCP builds).
+- **Audits:** September review (one item open, TRI-12) and the October Opus 5.5 audit
+  (all five fixed) are in `~/.claude/overseer/reviews/`.
+
 ## What this is
 
 Twelve triangular prisms in a row inside a CNC-fabricated wooden frame. Each prism
